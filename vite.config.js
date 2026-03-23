@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 // e.g. if your repo is github.com/yourname/my-reviewer → base: '/my-reviewer/'
 export default defineConfig({
   plugins: [react()],
-  base: '/web-dev-reviewer/',
+  base: '/Reviewer/',
 })

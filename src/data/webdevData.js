@@ -307,5 +307,107 @@ form.addEventListener('submit', (event) => {
         'Prevent default form submission when validating',
       ],
     },
+  {
+    id: 'wd5',
+    num: 'Module 5',
+    shortTitle: 'React JS',
+    title: 'React JS · Modern Frontend',
+    accentColor: '#61dafb',
+    accentRgb: '97,218,251',
+    terms: [
+      { term: 'React', def: 'A JavaScript library for building user interfaces using components.' },
+      { term: 'Component', def: 'Reusable UI blocks in React.' },
+      { term: 'JSX', def: 'JavaScript syntax that looks like HTML used in React.' },
+      { term: 'Props', def: 'Data passed from parent to child components.' },
+      { term: 'State', def: 'Data that changes inside a component.' },
+      { term: 'useState', def: 'A React hook used to manage state.' },
+      { term: 'useEffect', def: 'A hook used to run side effects like fetching data.' },
+      { term: 'Virtual DOM', def: 'A lightweight copy of the real DOM for faster updates.' },
+    ],
+
+    codeExamples: [
+      {
+        lang: 'CLI',
+        desc: 'Create React app using Vite',
+        code: `npm create vite@latest my-app
+  cd my-app
+  npm install
+  npm run dev`,
+      },
+      {
+        lang: 'CLI',
+        desc: 'Install React dependencies manually',
+        code: `npm install react react-dom`,
+      },
+      {
+        lang: 'CLI',
+        desc: 'Install useful packages',
+        code: `npm install react-router-dom
+  npm install axios`,
+      },
+      {
+        lang: 'JSX',
+        desc: 'Basic React component',
+        code: `function App() {
+    return <h1>Hello React</h1>
+  }
+
+  export default App`,
+      },
+      {
+        lang: 'JSX',
+        desc: 'Using useState',
+        code: `import { useState } from 'react'
+
+  function Counter() {
+    const [count, setCount] = useState(0)
+
+    return (
+      <button onClick={() => setCount(count + 1)}>
+        Count: {count}
+      </button>
+    )
+  }`,
+      },
+      {
+        lang: 'JSX',
+        desc: 'Using props',
+        code: `function Greeting({ name }) {
+    return <h2>Hello {name}</h2>
+  }`,
+      },
+      {
+        lang: 'JSX',
+        desc: 'useEffect example',
+        code: `import { useEffect } from 'react'
+
+  useEffect(() => {
+    console.log('Component mounted')
+  }, [])`,
+      },
+      {
+        lang: 'JSX',
+        desc: 'Simple routing example',
+        code: `import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+    </Routes>
+  </BrowserRouter>`,
+      },
+    ],
+
+    bestPractices: [
+      'Use functional components instead of class components',
+      'Keep components small and reusable',
+      'Use hooks properly (useState, useEffect)',
+      'Organize files into folders (components, pages, data)',
+      'Avoid unnecessary re-renders',
+      'Use React Router for navigation',
+      'Use axios or fetch for API calls',
+    ],
+  }
   ],
 }

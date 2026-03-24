@@ -1,8 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { webdevCategory } from './data/webdevData'
 import { imCategory } from './data/imData'
+import { networkingCategory } from './data/networkingData'
 
-const reviewerCategories = [webdevCategory, imCategory]
+const reviewerCategories = [webdevCategory, imCategory, networkingCategory]
+
+const themes = [
+  { id: 'midnight', label: 'Midnight' },
+  { id: 'light', label: 'Light' },
+  { id: 'coffee', label: 'Coffee' },
+  { id: 'forest', label: 'Forest' },
+  { id: 'rose-noir', label: 'Rose Noir' },
+]
 
 function getLangClass(lang) {
   const map = {
@@ -11,6 +20,10 @@ function getLangClass(lang) {
     CSS: 'lang--css',
     JS: 'lang--js',
     SQL: 'lang--sql',
+    REACT: 'lang--js',
+    JSX: 'lang--js',
+    CLI: 'lang--default',
+    TXT: 'lang--default',
   }
 
   return map[lang] || 'lang--default'
@@ -59,21 +72,23 @@ function Sidebar({
                   <span className="sidebar-group__category-desc">{category.description}</span>
                 </button>
 
-                <div className="sidebar-group__modules">
-                  {category.modules.map((module) => (
-                    <button
-                      key={module.id}
-                      className={`sidebar-module ${
-                        isCategoryActive && activeModuleId === module.id ? 'sidebar-module--active' : ''
-                      }`}
-                      style={{ '--c': module.accentColor, '--r': module.accentRgb }}
-                      onClick={() => onSelectModule(category.id, module.id)}
-                    >
-                      <span className="sidebar-module__num">{module.num}</span>
-                      <span className="sidebar-module__title">{module.shortTitle}</span>
-                    </button>
-                  ))}
-                </div>
+                {isCategoryActive && (
+                  <div className="sidebar-group__modules">
+                    {category.modules.map((module) => (
+                      <button
+                        key={module.id}
+                        className={`sidebar-module ${
+                          activeModuleId === module.id ? 'sidebar-module--active' : ''
+                        }`}
+                        style={{ '--c': module.accentColor, '--r': module.accentRgb }}
+                        onClick={() => onSelectModule(category.id, module.id)}
+                      >
+                        <span className="sidebar-module__num">{module.num}</span>
+                        <span className="sidebar-module__title">{module.shortTitle}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )
           })}
@@ -85,7 +100,7 @@ function Sidebar({
   )
 }
 
-function Header({ category, module }) {
+function Header({ category, module, theme, setTheme, themes }) {
   return (
     <header className="topbar">
       <div className="topbar__content">
@@ -94,11 +109,26 @@ function Header({ category, module }) {
           <h1 className="topbar__title">{module.title}</h1>
         </div>
 
-        <div
-          className="topbar__badge"
-          style={{ '--c': module.accentColor, '--r': module.accentRgb }}
-        >
-          {module.num}
+        <div className="topbar__actions">
+          <select
+            className="theme-select"
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            aria-label="Select theme"
+          >
+            {themes.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+
+          <div
+            className="topbar__badge"
+            style={{ '--c': module.accentColor, '--r': module.accentRgb }}
+          >
+            {module.num}
+          </div>
         </div>
       </div>
     </header>
@@ -127,13 +157,6 @@ function Hero({ category, module, onScrollToContent }) {
         </span>
       </div>
 
-      <button
-        className="hero__button"
-        onClick={onScrollToContent}
-        style={{ '--c': module.accentColor, '--r': module.accentRgb }}
-      >
-        Start Reviewing
-      </button>
     </section>
   )
 }
@@ -270,6 +293,15 @@ export default function App() {
   const [activeModuleId, setActiveModuleId] = useState(categories[0].modules[0].id)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('reviewer-theme') || 'midnight'
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('reviewer-theme', theme)
+  }, [theme])
+
   const activeCategory = useMemo(
     () => categories.find((category) => category.id === activeCategoryId) || categories[0],
     [activeCategoryId, categories]
@@ -283,13 +315,7 @@ export default function App() {
   )
 
   const handleSelectCategory = (categoryId) => {
-    const selectedCategory = categories.find((category) => category.id === categoryId)
-    if (!selectedCategory) return
-
-    setActiveCategoryId(categoryId)
-    setActiveModuleId(selectedCategory.modules[0].id)
-    setSidebarOpen(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setActiveCategoryId((prev) => (prev === categoryId ? prev : categoryId))
   }
 
   const handleSelectModule = (categoryId, moduleId) => {
@@ -322,7 +348,13 @@ export default function App() {
       />
 
       <div className="page-shell">
-        <Header category={activeCategory} module={activeModule} />
+        <Header
+          category={activeCategory}
+          module={activeModule}
+          theme={theme}
+          setTheme={setTheme}
+          themes={themes}
+        />
         <Hero category={activeCategory} module={activeModule} onScrollToContent={scrollToContent} />
         <MainReviewer module={activeModule} />
 
